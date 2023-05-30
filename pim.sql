@@ -1,65 +1,53 @@
 CREATE DATABASE grafica;
 USE grafica;
-	CREATE TABLE pedido (
-	 cliente_pedido varchar(100),
-	 total_preco decimal(10,2),	
-	 nota_fiscal_venda INT PRIMARY KEY
-	);
-
-	CREATE TABLE produtos_pedidos (
-	 produto VARCHAR(100),
-	 id_produto int,
-	 quantidade int,
-	 id_produto_pedido int primary key,
-     id_pedido int,
-  FOREIGN KEY (id_pedido) REFERENCES pedido(nota_fiscal_venda),
-  FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
-	);
-
-	CREATE TABLE produto (
-	 nome varchar(100),
-	 preco decimal(10,2),
-	 descricao varchar(100),
-	 id_produto INT PRIMARY KEY,
-     nota_fiscal_compra int
-	);
-
-CREATE TABLE Cliente (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(100) NOT NULL
+CREATE TABLE pedido
+(
+ cliente_pedido INT,
+ total_preco FLOAT,
+ nota_fiscal_venda INT PRIMARY KEY,
+ idjuridico_fisico_cliente INT,
+ FOREIGN KEY (idjuridico_fisico_cliente) REFERENCES juridico_fisico_cliente (idjuridico_fisico_cliente)
 );
 
-CREATE TABLE Juridico (
-  cnpj VARCHAR(14) PRIMARY KEY,
-  telefone VARCHAR(20),
-  nome_fantasia VARCHAR(100),
-  FOREIGN KEY (cnpj) REFERENCES Cliente(id)
+CREATE TABLE produto
+(
+ descricao VARCHAR(255),
+ id_produto INT PRIMARY KEY,
+ nome VARCHAR(255),
+ preco FLOAT,
+ nota_fiscal_compra INT
 );
 
-CREATE TABLE Fisico (
-  cpf VARCHAR(11) PRIMARY KEY,
-  telefone VARCHAR(20),
-  nome VARCHAR(100),
-  FOREIGN KEY (cpf) REFERENCES Cliente(id)
+CREATE TABLE juridico_fisico_cliente
+(
+ cnpj_ou_cpf INT PRIMARY KEY,
+ nome VARCHAR(255),
+ codigo INT,
+ telefone INT
 );
 
-CREATE TABLE Fornecedor (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  nome VARCHAR(100) NOT NULL
+CREATE TABLE papel_cartucho_fornecedor
+(
+ CNPJ INT PRIMARY KEY,
+ telefone INT,
+ email VARCHAR(255),
+ Nome VARCHAR(255)
 );
 
-CREATE TABLE Fornecedor_Cartucho (
-  cnpj VARCHAR(14) PRIMARY KEY,
-  telefone VARCHAR(20),
-  nome VARCHAR(100),
-  email VARCHAR(100),
-  FOREIGN KEY (cnpj) REFERENCES Fornecedor(id)
+CREATE TABLE engloba
+(
+ nota_fiscal_venda INT,
+ id_produto INT,
+ PRIMARY KEY (nota_fiscal_venda, id_produto),
+ FOREIGN KEY (nota_fiscal_venda) REFERENCES pedido (nota_fiscal_venda),
+ FOREIGN KEY (id_produto) REFERENCES produto (id_produto)
 );
 
-CREATE TABLE Fornecedor_Papel (
-  cnpj VARCHAR(14) PRIMARY KEY,
-  telefone VARCHAR(20),
-  nome VARCHAR(100),
-  email VARCHAR(100),
-  FOREIGN KEY (cnpj) REFERENCES Fornecedor(id)
+CREATE TABLE fornece
+(
+ id_produto INT,
+ CNPJ INT,
+ PRIMARY KEY (id_produto, CNPJ),
+ FOREIGN KEY (id_produto) REFERENCES produto (id_produto),
+ FOREIGN KEY (CNPJ) REFERENCES papel_cartucho_fornecedor (CNPJ)
 );
